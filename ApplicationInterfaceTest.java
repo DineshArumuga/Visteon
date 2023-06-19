@@ -5,7 +5,8 @@ import com.allgo.devicecontrolmanager.ApplicationInterface;
 import android.os.RemoteException;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import android.test.suitebuilder.annotation.MediumTest;
-
+import java.lang.reflect.Field;
+import android.util.Log;
 
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -21,7 +22,9 @@ import static org.mockito.Mockito.*;
 @MediumTest
 @RunWith(AndroidJUnit4.class)
 public class ApplicationInterfaceTest {
+
     private ApplicationInterface mApplicationInterface;
+    
     @Mock
     private RemotableEventType mMockremotableEventType;
     @Mock
@@ -30,7 +33,6 @@ public class ApplicationInterfaceTest {
     private IDevCtrlManagerHMICb mMockHMICb;
     @Mock
     private DeviceStateManager mMockdeviceStateManager;
-
 
 
     @Before
@@ -43,13 +45,15 @@ public class ApplicationInterfaceTest {
     @Test
     public void onDeviceConnected_RemotableDevInfoNull_ReturnSuccessStatus() throws RemoteException
     {
-
+	//Arrange
         int SUCCESS = 0;
         RemotableDevInfo remotableDevInfo = null;
-
+	
+	//Act
         doNothing().when(mMockHMICb).onDeviceConnected(remotableDevInfo, mMockremotableEventType);
         int result = mApplicationInterface.onDeviceConnected(remotableDevInfo, mMockremotableEventType);
 
+	//Assert
         assertEquals(SUCCESS,result);
         verify(mMockHMICb,times(1)).onDeviceConnected(remotableDevInfo,mMockremotableEventType);
 
@@ -114,13 +118,26 @@ public class ApplicationInterfaceTest {
 
         RemotableEventType remotableEventType = mMockremotableEventType;
         RemotableDevInfo remotableDevInfo = mMockremotableDevInfo;
-        mApplicationInterface = new ApplicationInterface(null,mMockdeviceStateManager);
+  	mApplicationInterface = new ApplicationInterface(null,mMockdeviceStateManager);
+	mMockHMICb = mApplicationInterface.getCallbackObject();
+/*	try{
+	Field privateField = ApplicationInterface.class.getDeclaredField("mCallback");
+	privateField.setAccessible(true);
+	privateField.set(privateField,null);
+	}
+	catch(Exception e)
+	{
+		Log.e("ApplicationInterfaceTest","Exception : "+e.getMessage());
+	}
+*/
 
         //Act
         int result = mApplicationInterface.onDeviceConnected(remotableDevInfo, remotableEventType);
 
         //Assert
         assertEquals(INVALID_STATUS,result);
+//	assertNull(mApplicationInterface.mCallback);
+	assertNull(mMockHMICb);
 
     }
 
