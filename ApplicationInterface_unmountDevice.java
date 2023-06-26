@@ -30,7 +30,6 @@ public class ApplicationInterface_unmountDevice {
 	public void setup()
 	{
 		MockitoAnnotations.initMocks(this);
-		mapplicationInterface = new ApplicationInterface(mMockHMICb,mMockdeviceStateManager);
 //		mDevCtrlManagerHMIBinder = new ApplicationInterface.DevCtrlManagerHMIBinder(mMockdeviceStateManager);		
 	}
 	
@@ -98,5 +97,6 @@ public class ApplicationInterface_unmountDevice {
 		int status = mDevCtrlManagerHMIBinder.unmountDevice(value);
 		assertEquals(status,SUCCESS);	
 		verify(mDevCtrlManagerHMIBinder,times(1)).unmountDevice(value);
+		
 	}
 }
